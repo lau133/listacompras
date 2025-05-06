@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Compras</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.global.prod.js"></script>
+  <style>
+   
+   
+   
+   body {
+      font-family: Arial, sans-serif;
+      background-color: #edc6ea;
+      margin: 0;
+      padding: 0;
+
+      background-image: url('img/4365594719abeb16967a9ebfeb4106e3.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;            
+    margin: 0; 
+    }
+
+    #app {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      opacity: 0.7;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .cantidad-control {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cantidad-control button {
+      padding: 5px 10px;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .agregar-btn {
+      background-color: #c44ca4;
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #eee;
+    }
+
+    .btn-completado {
+      background-color: #ce76e9;
+      color: white;
+    }
+
+    
+
+    .btn-eliminar {
+      background-color: #e24871;
+      color: white;
+    }
+
+    .completado {
+      text-decoration: line-through;
+      color: rgb(245, 158, 222);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Lista de Compras</h1>
+
+    <div class="input-row">
+      <input type="text" v-model="producto" placeholder="Nombre del producto" />
+      <div class="cantidad-control">
+        <button @click="cambiarCantidad(-1)">-</button>
+        <span>{{ cantidad }}</span>
+        <button @click="cambiarCantidad(1)">+</button>
+      </div>
+      <button class="agregar-btn" @click="agregarProducto">Agregar</button>
+    </div>
+
+    <table v-if="lista.length > 0">
+      <thead>
+        <tr>
+          <th>Cantidad</th>
+          <th>Producto</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in lista" :key="index">
+          <td>{{ item.cantidad }}</td>
+          <td :class="{ completado: item.completo }">{{ item.nombre }}</td>
+          <td>
+            <button class="btn-completado" @click="toggleCompleto(index)">
+              {{ item.completo ? 'Desmarcar' : 'Completo' }}
+            </button>
+            <button class="btn-eliminar" @click="eliminarProducto(index)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p v-else>No hay productos en la lista.</p>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          producto: '',
+          cantidad: 1,
+          lista: []
+        };
+      },
+      methods: {
+        cambiarCantidad(valor) {
+          this.cantidad = Math.max(1, this.cantidad + valor);
+        },
+        agregarProducto() {
+          if (this.producto.trim() !== '') {
+            this.lista.push({
+              nombre: this.producto,
+              cantidad: this.cantidad,
+              completo: false
+            });
+            this.producto = '';
+            this.cantidad = 1;
+          }
+        },
+        eliminarProducto(index) {
+          this.lista.splice(index, 1);
+        },
+        toggleCompleto(index) {
+          this.lista[index].completo = !this.lista[index].completo;
+        },
+        
+      }
+    });
+
+    app.mount('#app');
+  </script>
+</body>
+</html>
